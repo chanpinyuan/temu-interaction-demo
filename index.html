@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f3f0e9"><title>TEMU · 从心动到奖励</title><link rel="stylesheet" href="styles.css?rev=3286537a9888"><link rel="stylesheet" href="pencil.css?rev=78a7fafb9dd5"><link rel="stylesheet" href="narrative.css?rev=d8f5374af5e4"></head>
+<body>
+<header class="masthead"><a class="brand" href="./index.html">TEMU</a><div class="experience-modes" role="tablist" aria-label="体验模式"><button type="button" role="tab" id="mode-guided" data-experience-mode="guided" aria-selected="true" aria-controls="experience-panel">带引导</button><button type="button" role="tab" id="mode-explore" data-experience-mode="explore" aria-selected="false" aria-controls="experience-panel" tabindex="-1">自由探索</button></div><button class="reset quiet" id="reset">↻ 从头讲解</button></header>
+<nav class="narrative-overview" aria-label="讲解进度"><ol class="chapter-list" id="chapter-list"></ol><div class="sr-only"><span id="chapter-status"></span><div id="chapter-meter" role="progressbar" aria-label="章节进度" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0"><span></span></div></div></nav>
+<div class="legacy-flow" hidden><section class="flow-overview" aria-label="总体验进度"><div class="flow-intro"><span class="eyebrow">BUY TWO. UNLOCK MORE.</span><h1>从感知，到获得。</h1><p>7 个节点，看见完整的奖励路径。</p></div><div class="flow-tracker"><div class="flow-meta"><span>主流程 / 点击节点预览</span><span id="flow-status">当前：首页入口</span></div><nav class="journey" aria-label="流程步骤" id="journey"></nav><div class="journey-meter" role="progressbar" aria-label="当前流程位置" aria-valuemin="1" aria-valuemax="7" aria-valuenow="1"><span id="journey-fill"></span></div></div></section>
+</div>
+<main class="workspace" id="experience-panel" role="tabpanel" aria-labelledby="mode-guided">
+<aside class="story narrative-story" aria-label="主题与设计说明">
+<div class="intent"><span class="eyebrow">设计说明</span><h3 id="intent-title"></h3><p id="intent-copy"></p><div id="motion-tags"></div></div>
+<div id="explore-controls" hidden><div class="trigger-strategy"><span class="eyebrow">转盘触发策略</span><h3>让低参与用户先看见价值</h3><p>面向活动参与率较低的用户，用可跳过的转盘吸引注意，再承接到选品。常规用户保留首页 banner 入口。</p><div class="segmented audience-switch" aria-label="模拟用户参与状态"><button data-audience="low" aria-pressed="true">低参与用户</button><button data-audience="regular" aria-pressed="false">常规用户</button></div><p id="trigger-status" role="status">演示：停留 4.5–9 秒后渐显，每次体验最多一次。</p><small>人群判定为演示假设；实际阈值与频控需业务验证。</small></div><div class="experiment"><div class="eyebrow">主会场对照</div><div class="segmented" aria-label="主会场版本"><button data-variant="slots" aria-pressed="true">A · 商品进度位</button><button data-variant="progress" aria-pressed="false">B · 圆形进度条</button></div><p id="variant-note">沿用主流程的两个商品位。</p></div><div class="entry-links"><button id="entry-spin">手动体验转盘 ↗</button><button id="entry-offer">直接权益入口 ↗</button></div></div>
+</aside>
+<section class="center" aria-label="交互手机原型"><div class="device-wrap"><div class="iphone"><i class="hardware mute"></i><i class="hardware volume-one"></i><i class="hardware volume-two"></i><i class="hardware power"></i><div class="screen"><div class="island" aria-hidden="true"><i></i></div><div class="status"><span>9:41</span><span class="status-icons">▮▮▮ <svg viewBox="0 0 24 18"><path d="M2 5Q12-3 22 5M6 9Q12 4 18 9M10 13Q12 11 14 13"/></svg><b></b></span></div><div id="app"></div><div id="toast" role="status" aria-live="polite"></div><div id="fx" aria-hidden="true"></div><div class="home-indicator" aria-hidden="true"></div></div></div></div></section>
+<aside class="guidance narrative-guidance" aria-label="当前操作指引">
+<div class="guide-top"><span class="eyebrow" id="guide-kicker">现在体验</span><span id="step-index"></span></div>
+<div id="guide-content" aria-live="polite"></div>
+<div id="scene-note" class="scene-note" hidden></div>
+<p id="phone-instruction" class="phone-instruction">在手机内点击高亮区域</p><button class="guide-next" id="guide-next" hidden></button>
+<div class="story-navigation"><button id="story-back" type="button">← 上一步</button><span id="story-action-hint" hidden></span></div>
+<div class="onboarding-controls"><button class="locate" id="locate">定位手机操作</button><button id="toggle-onboarding" aria-pressed="true">关闭高亮</button></div>
+<span class="sr-only" id="onboarding-status" role="status" aria-live="polite"></span>
+<div id="walkthrough-summary" hidden></div>
+<p class="narrative-footnote">演示订单，不产生实际支付。</p>
+</aside>
+</main>
+<script src="design-data.js?rev=0321aa202c7f"></script><script src="app.js?rev=d435ebb2a51b"></script><script src="retention.js?rev=e593af310cb1"></script><script src="pencil-renderer.js?rev=70f297afa2fd"></script><script src="checkout-entry.js?rev=3f5560da6df3"></script><script src="qualification-motion.js?rev=ba0be7bdb7c4"></script><script src="narrative.js?rev=66b9659fb540"></script></body></html>

@@ -1,0 +1,70 @@
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-100.ttf');font-weight:100;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-200.ttf');font-weight:200;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-300.ttf');font-weight:300;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-400.ttf');font-weight:400;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-500.ttf');font-weight:500;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-600.ttf');font-weight:600;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-700.ttf');font-weight:700;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-800.ttf');font-weight:800;font-display:block}
+@font-face{font-family:Inter;src:url('assets/fonts/Inter-900.ttf');font-weight:900;font-display:block}
+@font-face{font-family:'TikTok Sans';src:url('assets/fonts/TikTok-VF.ttf');font-weight:100 900;font-display:block}
+
+.pencil-screen{position:absolute!important;inset:0!important;width:390px!important;height:844px!important;padding:0!important;margin:0!important;display:block!important;background:transparent!important;animation:none!important;overflow:hidden!important;color:#000}
+.pnode{all:initial;position:absolute;box-sizing:border-box;display:block;isolation:auto}
+.pnode[data-action]{cursor:pointer}.pnode[data-action]:focus-visible{outline:2px solid #d78021;outline-offset:2px}.pnode[disabled]{pointer-events:none}
+.pnode img.pencil-leaf{position:absolute;width:100%;height:100%;inset:0;display:block;object-fit:fill;pointer-events:none}
+.pnode.activity-scroll,.pnode.picker-grid-scroll{scrollbar-width:none;overscroll-behavior:contain}.pnode::-webkit-scrollbar{display:none}
+.pnode.wheel-wrap .wheel-rotor,.pnode.wheel-wrap>.wheel-fixed-hub{width:100%;height:100%;inset:0}.pnode.wheel-wrap .spin-center{color:transparent;background:transparent}.pencil-hit{position:absolute;background:transparent;border:0;z-index:3}.payment-back{left:8px;top:52px;width:32px;height:42px}
+.payment-radio{appearance:none;position:absolute!important;z-index:3;left:14px;width:20px;height:20px;margin:0;border:0;background:transparent;border-radius:50%;cursor:pointer}.payment-radio:checked{border:5px solid #fff;background:#ff7900;box-shadow:0 0 0 1px #ff7900}
+.auto-offer .pencil-screen{animation:veil .4s ease-in-out!important}.pnode.layer-modal{animation:none}
+/* The original device, island and chassis are unchanged. Avoid drawing system chrome twice. */
+.screen>.home-indicator{visibility:hidden}
+
+/* Host owns the status bar: crop the embedded design chrome, including screenshot-based checkout. */
+#app>.pencil-screen{clip-path:inset(44px 0 0 0)}
+#app:before{content:"";position:absolute;left:0;top:0;width:390px;height:44px;background:var(--host-status-bg,#fff9ec)}
+.screen>.status{visibility:visible;z-index:91}
+.screen>.island{z-index:92}
+.wheel-rest{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}.wheel-wrap.spinning .wheel-rest{display:none}.wheel-wrap .spin-center{z-index:4}.cart-items-scroll{scrollbar-width:none}
+.pnode.primary,.pnode.checkout-cta,.pnode.add-button{transition:transform .15s ease-in-out}.pnode.primary:active,.pnode.checkout-cta:active,.pnode.add-button:active{transform:scale(.97)}
+.pnode.checkout-cta{font-family:Inter,sans-serif;font-size:20px;font-weight:600;color:white;text-align:center;display:grid;place-items:center}
+/* Action descendants must inherit button behavior instead of text-selection cursors. */
+#app [data-action],#app [data-action] *,#app button,#app button *,#app [role="button"],#app [role="button"] *{cursor:pointer;user-select:none;-webkit-user-select:none}
+#app [data-action][disabled],#app [data-action][disabled] *,#app button:disabled,#app button:disabled *{cursor:default}
+.pnode[data-name="真实支付页｜地址与支付方式"]{isolation:isolate}
+/* Keep the original burst path, with a softer reveal and longer fade-out. */
+.confetti{animation-name:confetti-soft;animation-duration:1.6s;animation-fill-mode:both}
+@keyframes confetti-soft{
+  0%{opacity:0;transform:translate(0,0) rotate(0)}
+  9%{opacity:1}
+  48%{opacity:1}
+  76%{opacity:.5}
+  100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}
+}
+.item-remove:after{content:"";position:absolute;inset:-5px}
+.pnode img.pencil-leaf{border-radius:inherit}
+
+/* Fixed Pencil timer geometry; only the text node changes on animation frames. */
+.pnode.countdown-digit{font-family:Menlo,Consolas,monospace!important;font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1;line-height:20px!important;white-space:nowrap!important;text-align:center!important;animation:none!important;transition:none!important}
+.retention-layer{z-index:30!important}
+.retention-layer [data-name="退出挽留遮罩"]{cursor:default}
+
+.pnode[data-name*="氛围底图"]{pointer-events:none}
+
+/* One coordinate system for disc, fixed rim, hub and pointer. */
+.wheel-composite{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.wheel-disc{transform-box:view-box;transform-origin:307.52px 311.24px;will-change:transform}
+.wheel-wrap.spinning .wheel-disc{animation:spinWheel 2.8s cubic-bezier(.42,0,.12,1) forwards}
+.wheel-wrap.spinning:after{display:none}
+.pnode.wheel-wrap .spin-center{left:35.7%;top:36.3%;width:27.8%;height:27.8%;padding:0}
+.pnode.primary[aria-busy="true"]{cursor:wait}
+.pnode.primary[aria-busy="true"] [data-name="按钮标签"]{color:#fff;text-align:center}
+
+/* One brief reward-condition cue, behind the existing ticket; no layout movement. */
+.pnode.venue-coupon{isolation:isolate;overflow:visible}
+.qualification-confetti{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.qualification-confetti>i{position:absolute;left:50%;top:50%;display:block;pointer-events:none;animation:qualification-burst 900ms cubic-bezier(.25,.6,.35,1) var(--qualification-delay,0ms) both}
+.venue-coupon.qualification-emphasis>.pencil-leaf{animation:qualification-tilt 900ms ease-in-out var(--qualification-delay,0ms) both;transform-origin:50% 60%}
+@keyframes qualification-burst{0%{opacity:0;transform:translate(var(--start-x),var(--start-y)) rotate(0) scale(.6);animation-timing-function:cubic-bezier(.12,.7,.3,1)}12%{opacity:1}50%{opacity:1;transform:translate(var(--burst-x),var(--burst-y)) rotate(var(--spin)) scale(1);animation-timing-function:cubic-bezier(.45,0,.9,.65)}72%{opacity:.8}100%{opacity:0;transform:translate(var(--fall-x),var(--fall-y)) rotate(calc(var(--spin)*1.6)) scale(.85)}}
+@keyframes qualification-tilt{0%,100%{transform:rotate(0) scale(1)}24%{transform:rotate(-2deg) scale(1.025)}48%{transform:rotate(1.8deg) scale(1.025)}72%{transform:rotate(-.7deg) scale(1.01)}}
+@media(prefers-reduced-motion:reduce){.qualification-confetti{display:none}.venue-coupon.qualification-emphasis>.pencil-leaf{animation:none}}

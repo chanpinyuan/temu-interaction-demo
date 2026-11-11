@@ -1,0 +1,72 @@
+/* Presentation only: retain the existing device and product screens. */
+[hidden]{display:none!important}
+.narrative-overview{max-width:1240px;margin:0 auto;padding:20px 24px 18px;border-bottom:1px solid #ded6ca}
+.chapter-list{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;padding:0}
+.chapter-list li{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;color:#9f978b;min-width:0}
+.chapter-list li:not(:last-child):before{content:'';position:absolute;left:calc(50% + 24px);right:calc(-50% + 24px);top:15px;height:1px;background:#ddd5c9}
+.chapter-list li.completed:before{background:#b48a55}
+.chapter-number{display:grid;place-items:center;width:31px;height:31px;border:1px solid #d7cec0;border-radius:50%;font-size:11px;font-variant-numeric:tabular-nums;background:#f4f1eb}
+.chapter-list strong{display:block;font-size:14px;font-weight:600;line-height:22px;white-space:nowrap}
+.chapter-list li.active{color:#4c321e}
+.chapter-list li.active .chapter-number{color:#fff;background:#a8763b;border-color:#a8763b;box-shadow:0 0 0 4px #a8763b12}
+.chapter-list li.completed .chapter-number{background:#e9dfcf;color:#8b663a;border-color:#e9dfcf}
+.workspace{align-items:center;gap:34px;padding-top:22px;padding-bottom:24px}
+.narrative-story{align-self:center}
+.narrative-story .intent{padding-top:17px;border-top:1px solid #d8cfc1}
+.narrative-story .intent h3{font-size:15px;margin:12px 0 8px;line-height:1.6}
+.narrative-story .intent p{font-size:12px;line-height:1.9;max-width:290px}
+.narrative-story #motion-tags{display:none}
+.narrative-guidance{align-self:center}
+.narrative-guidance .guide-top{border-top:1px solid #cfc6b8;padding-top:17px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.narrative-guidance #step-index{font-size:10px;color:#9f896c;letter-spacing:.5px}
+.narrative-guidance #guide-content{padding-bottom:0;margin-bottom:20px}
+.narrative-guidance #guide-content h2{font-size:25px;line-height:1.45;letter-spacing:-.6px;margin:21px 0 12px}
+.narrative-guidance #guide-content p{font-size:13px;line-height:1.9;margin:0;color:#857968}
+.scene-note{padding:11px 13px;border-left:2px solid #b0834c;background:#eae1d344;color:#8c7152;font-size:11px;line-height:1.8;margin:0 0 18px}
+.narrative-guidance .guide-next{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:50px;padding:14px 16px;font-size:13px;background:#363027;color:#fff;border-radius:9px;text-align:left}
+.narrative-guidance .guide-next:after{content:'→';font-size:18px}
+.narrative-guidance .guide-next:disabled{opacity:.65}
+.story-navigation{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.story-navigation button{background:none;padding:8px 0;color:#8e795e;font-size:11px}
+.story-navigation button:disabled{opacity:.35}
+#story-action-hint{font-size:10px;color:#a29787}
+.narrative-guidance .onboarding-controls{margin-top:10px;padding-top:8px;border-top:1px solid #e1d8cb}
+.narrative-footnote{font-size:10px;color:#a19686;line-height:1.85;margin:23px 0 0}
+#walkthrough-summary{margin-top:16px;border-top:1px solid #ded5c8;padding-top:12px}
+#walkthrough-summary p{font-size:11px;line-height:1.8;color:#8a7b66;margin:0 0 10px}
+#walkthrough-summary button{display:block;background:none;font-size:11px;color:#8b5a27;padding:6px 0;text-align:left}
+#explore-controls{margin-top:22px}
+#explore-controls .trigger-strategy{margin-top:0}
+
+@media(max-width:1050px) and (min-width:851px){.workspace{gap:22px}.narrative-guidance #guide-content h2{font-size:22px}}
+@media(max-width:850px){.workspace{grid-template-columns:1fr 1fr;gap:24px;align-items:start}.center{grid-column:1;grid-row:1/3}.narrative-story{grid-column:2;grid-row:1;align-self:end}.narrative-guidance{grid-column:2;grid-row:2;align-self:start}.narrative-story .intent p{max-width:none}.narrative-guidance .guide-top{padding-top:14px}.narrative-guidance #guide-content h2{font-size:22px}}
+@media(max-width:620px){.narrative-overview{padding:16px 12px}.chapter-list strong{font-size:11px;line-height:18px}.chapter-number{width:26px;height:26px;font-size:10px}.chapter-list li{gap:6px}.chapter-list li:not(:last-child):before{top:13px;left:calc(50% + 20px);right:calc(-50% + 20px)}.workspace{display:flex;flex-direction:column;gap:18px;padding:18px 12px}.narrative-story{order:0;padding:0 12px;width:100%}.narrative-story .intent{padding-top:0;border-top:0}.narrative-story .intent>.eyebrow,.narrative-story .intent h3{display:none}.narrative-story .intent p{font-size:12px;margin:0}.center{order:1}.narrative-guidance{order:2;padding:0 12px;width:100%}.narrative-guidance #guide-content h2{font-size:22px;margin-top:14px}.narrative-footnote{margin-top:16px}}
+
+/* Keep product actions inside the phone; side actions only change demo context. */
+.story-navigation,.narrative-guidance .onboarding-controls{display:none}
+.phone-instruction{font-size:11px;color:#a27a49;margin:18px 0 0;display:flex;align-items:center;gap:8px}
+.phone-instruction:before{content:'';width:6px;height:6px;border-radius:50%;background:#ba8b52}
+.narrative-guidance .guide-next{background:transparent;color:#825a2b;border:1px solid #d6c5ab;min-height:42px;padding:10px 13px;font-size:12px}
+.narrative-guidance .guide-next:after{font-size:15px}
+.onboarding-focus{animation:phoneCoach 3.6s ease-in-out 1 both;background:#ffad3e16;border-color:#e99a43}
+.coach-tap{position:absolute;right:10px;top:50%;width:17px;height:17px;margin-top:-8px;border-radius:50%;background:#fffaf0;border:2px solid #b57832;box-shadow:0 0 0 5px #d99b4640;animation:tapCue 1.2s ease-in-out 3;pointer-events:none}
+@keyframes phoneCoach{0%,100%{opacity:0}12%,85%{opacity:1}}
+@keyframes tapCue{0%,100%{transform:scale(.8);box-shadow:0 0 0 3px #d99b4640}50%{transform:scale(1);box-shadow:0 0 0 8px #d99b4610}}
+@media(prefers-reduced-motion:reduce){.coach-tap{animation:none}.onboarding-focus{animation:phoneCoach 3.6s linear 1 both!important}}
+
+/* Transparent spotlight hole with a scrim clipped by the phone's rounded screen. */
+.screen .onboarding-focus,.screen .coach-retiring{position:absolute;z-index:75;pointer-events:none;box-sizing:border-box;background:transparent;border:2px solid #fff3da;box-shadow:0 0 0 2px #e7a855,0 0 0 999px rgba(18,16,13,.46);opacity:1;animation:none!important;transition:opacity .18s ease-in-out}
+.screen .coach-entering{opacity:0}
+@media(prefers-reduced-motion:reduce){.screen .onboarding-focus,.screen .coach-retiring{transition:none}.screen .coach-tap{animation:none}}
+
+/* Persistent mode choice; the existing phone state survives each switch. */
+.masthead{position:sticky;top:0;z-index:100;background:rgba(244,241,235,.94);backdrop-filter:blur(16px)}
+.experience-modes{display:flex;gap:3px;padding:4px;background:#e8e2d8;border:1px solid #dfd6c8;border-radius:11px}
+.experience-modes button{font-size:12px;padding:9px 21px;min-height:34px;border-radius:7px;background:none;color:#938675;white-space:nowrap}
+.experience-modes button[aria-selected=true]{background:#fffdf7;color:#624323;box-shadow:0 1px 4px #5b401719;font-weight:600}
+.narrative-guidance .guide-next.compare-ready{position:relative;background:#fff0d3;border-color:#c88b3d;color:#754516;font-weight:650;box-shadow:0 0 0 3px #e6b46b24;animation:compareInvitation 1.25s ease-in-out 3 .6s}
+.guide-next.compare-ready:after{animation:compareArrow 1.25s ease-in-out 3 .6s}
+@keyframes compareInvitation{0%,100%{box-shadow:0 0 0 3px #e6b46b24}50%{background:#ffe3ae;box-shadow:0 0 0 7px #dfaa532a,0 4px 18px #b7792924}}
+@keyframes compareArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+@media(max-width:620px){.masthead{padding:0 12px;gap:8px}.masthead .brand{font-size:21px}.experience-modes button{padding:8px 12px;font-size:11px}.masthead .reset{font-size:10px;padding:8px 0}.experience-modes{padding:3px}}
+@media(prefers-reduced-motion:reduce){.guide-next.compare-ready,.guide-next.compare-ready:after{animation:none!important}}
