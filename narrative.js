@@ -1,5 +1,5 @@
 /* A guided presentation around the existing product flow; no simulated payment shortcuts. */
-const story={index:0,mode:'guided',busy:false,offScript:false,snapshots:new Map(),seen:new Set(),journey:{pickerReviewed:false,singleReturned:false,exitLeft:false,exitContinued:false}};
+const story={index:0,mode:'guided',busy:false,offScript:false,comparisonPrompt:false,snapshots:new Map(),seen:new Set(),journey:{comparison:'pending',pickerReviewed:false,singleReturned:false,exitLeft:false,exitContinued:false}};
 const chapters=[
  ['先看见权益','首页轻入口 → 低参与用户邀请','让用户愿意多看一眼','首页保持轻量。转盘只面向低参与用户，并且可以跳过。'],
  ['再感知进度','加选第一件 → A/B 对照','把“还差一步”说清楚','先用商品位呈现选择，再用同一组商品体验进度条方案。'],
@@ -17,7 +17,7 @@ const storySteps=[
  step(0,'权益揭晓','先理解收益，再开始挑选','这是用于后续订单的券包。先看清购买条件，再进入活动会场。','进入活动会场','[data-action="venue"].primary',()=>state.page==='offer',()=>go('venue')),
  step(1,'方案 A · 商品位','先加选第一件','点击任意商品的 Add to pair，观察商品飞入、进度位和底部按钮的联动。','添加第一件商品',()=>`.add-button[data-action="add"][data-id="${nextProduct()}"]`,()=>plainVenue()&&!state.selected.size,()=>add(nextProduct())),
  step(1,'方案 A · 继续加选','一件已选，再挑一件','点击另一件商品的 Add to pair。单件 Checkout 仍可直接购买。','点击添加第二件',()=>`.add-button[data-action="add"][data-id="${nextProduct()}"]`,()=>plainVenue()&&eligibleCount()===1,()=>add(nextProduct())),
- step(1,'方案 A · 已选满','两件已选，可以对照 B 版','先看满件后的商品位与结账按钮，再对照圆形进度条。','查看 B 版进度条',null,()=>plainVenue()&&eligibleCount()>=2,()=>storyEnter(6,()=>{state.variant='progress';render();}), '切换只改变进度呈现，商品和金额保持一致。'),
+ step(1,'方案 A · 已选满','两件已选，可以对照 B 版','先看满件后的商品位与结账按钮，再对照圆形进度条。','查看 B 版进度条',null,()=>plainVenue()&&eligibleCount()>=2,()=>resolveComparison('viewed'), '切换只改变进度呈现，商品和金额保持一致。'),
  step(1,'对照小结','取消一件，继续体验单件路径','点击第二件商品的移除按钮，观察进度和结账按钮回退，再进入购物车。','移除第二件商品',()=>`.add-button[data-id="${[...state.selected].at(-1)}"]`,()=>plainVenue()&&eligibleCount()>=2,()=>remove([...state.selected].at(-1))),
  step(2,'场景一 · 购物车','在购物车，给一个补选入口','点击横幅中的 Add item，回到会场商品区。原来选中的商品会保留。','回到会场补选','.bag-sheet .add-item-link',()=>state.overlay==='bag'&&eligibleCount()===1,()=>locateProducts()),
  step(2,'场景一 · 返回选品','也可以直接购买一件','点击手机底部 Checkout，先正常进入支付页，确认订单与支付方式。','点击 Checkout','.checkout-cta',()=>plainVenue(),()=>go('checkout')),
@@ -45,15 +45,17 @@ function storySnapshot(){return {...state,selected:new Set(state.selected),draft
 function storyRemember(){story.snapshots.set(story.index,storySnapshot());story.seen.add(story.index);}
 function storyScenario(patch){clearAsync();Object.assign(state,{overlay:null,draft:null,spinning:false,paying:false,scroll:0,history:[],quantities:{},entryReturn:'home',offerSeen:true},patch);render();}
 function storyEnter(index,action){story.busy=true;story.index=index;try{action?.();storyRemember();}finally{story.busy=false;}storyObserve();storyRender();scheduleCoach(true);}
-function storyRestore(index=story.index){const snap=story.snapshots.get(index);if(!snap)return;const{guideJourney,...saved}=snap;story.busy=true;clearAsync();story.index=index;story.journey={...guideJourney};Object.assign(state,{...saved,selected:new Set(snap.selected),draft:snap.draft?new Set(snap.draft):null,history:[...snap.history],quantities:{...snap.quantities},spinning:false,paying:false});render();story.busy=false;storyObserve();storyRender();scheduleCoach(true);}
+function storyRestore(index=story.index){const snap=story.snapshots.get(index);if(!snap)return;const{guideJourney,...saved}=snap;story.busy=true;story.comparisonPrompt=false;clearAsync();story.index=index;story.journey={...guideJourney};Object.assign(state,{...saved,selected:new Set(snap.selected),draft:snap.draft?new Set(snap.draft):null,history:[...snap.history],quantities:{...snap.quantities},spinning:false,paying:false});render();story.busy=false;storyObserve();storyRender();scheduleCoach(true);}
 function storyAdvance(){if(story.mode!=='guided'||state.spinning||state.paying)return;if(story.offScript){story.index=stageForCurrentScreen();storyRemember();updateGuides();scheduleCoach(true);return;}contextualStoryStep().action();}
 function storyObserve(){
  if(story.busy||story.mode!=='guided')return;
+ if(state.page!=='venue'||eligibleCount()<2)story.comparisonPrompt=false;
  const next=stageForCurrentScreen();
  if(next!==story.index){story.index=next;storyRemember();}
 }
 function contextualStoryStep(){
  const s={...storySteps[story.index]};
+ if(story.comparisonPrompt)return {...s,chapter:1,phase:'讲解节点 · 方案对照',title:'先对照方案，或跳过继续',copy:'B 版用圆形进度条呈现同一组商品。查看或跳过后，都将继续体验单件补选与双件结账。',cta:'查看 B 版进度条',target:null,valid:()=>true,action:()=>resolveComparison('viewed'),note:'仅切换演示方案，已选商品和金额保持不变。'};
  if($('.rules-modal'))return {...s,phase:'活动规则',title:'看清条件，再继续',copy:'优惠券用于后续订单。点击 Got it 关闭规则，回到刚才的页面。',cta:'点击 Got it',target:'.rules-modal .primary',valid:()=>true,note:''};
  if(state.overlay==='bag'){
   const n=state.selected.size,qualified=eligibleCount()>=2;
@@ -70,19 +72,35 @@ function contextualStoryStep(){
 function storyRender(){
  if(story.busy)return;
  const s=contextualStoryStep(),done=story.index===22;
+ const exploreComparison=story.mode==='explore'&&plainVenue()&&eligibleCount()>=2&&!$('.rules-modal');
  document.body.classList.toggle('exploring',story.mode==='explore');
  document.querySelectorAll('[data-experience-mode]').forEach(tab=>{const active=tab.dataset.experienceMode===story.mode;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});
  $('#experience-panel').setAttribute('aria-labelledby','mode-'+story.mode);
  $('#reset').textContent=story.mode==='guided'?'↻ 从头讲解':'↻ 重置体验';
- $('#guide-next').classList.toggle('compare-ready',story.mode==='guided'&&story.index===5&&plainVenue()&&eligibleCount()>=2&&state.variant==='slots'&&!$('.rules-modal'));
+ $('#guide-next').classList.toggle('compare-ready',exploreComparison||(story.mode==='guided'&&story.index===5&&plainVenue()&&eligibleCount()>=2&&story.journey.comparison==='pending'&&!$('.rules-modal')));
+ $('#comparison-skip').hidden=story.mode!=='guided'||!story.comparisonPrompt;
+ $('.narrative-guidance').classList.toggle('comparison-prompt',story.mode==='guided'&&story.comparisonPrompt);
  $('#explore-controls').hidden=story.mode!=='explore';
+ $('#explore-controls .experiment').hidden=exploreComparison;
  $('#chapter-list').innerHTML=chapters.map((c,i)=>`<li class="${story.mode==='guided'&&s.chapter===i?'active':i<s.chapter||done?'completed':''}" ${story.mode==='guided'&&s.chapter===i?'aria-current="step"':''}><span class="chapter-number">${i<s.chapter||done?'✓':String(i+1).padStart(2,'0')}</span><div><strong>${c[0]}</strong></div></li>`).join('');
  $('#chapter-status').textContent=story.mode==='explore'?'自由探索':done?'04 / 04 · 讲解完成':`第 ${String(s.chapter+1).padStart(2,'0')} 章 / 共 04 章`;
  $('#chapter-meter').setAttribute('aria-valuenow',done?4:s.chapter+1);$('#chapter-meter>span').style.width=(done?100:(s.chapter+1)*25)+'%';
  $('#story-back').hidden=true;$('#locate').hidden=true;$('#toggle-onboarding').hidden=true;
  $('#walkthrough-summary').hidden=!done&&story.mode!=='explore';
  if(done||story.mode==='explore')$('#walkthrough-summary').innerHTML='<p>回看关键内容</p>'+[[0,'低参与用户与转盘'],[3,'商品位与进度条 A/B'],[7,'购物车与支付页承接'],[24,'继续支付与奖励到账']].filter(([i])=>story.snapshots.has(i)).map(([i,t])=>`<button data-story-replay="${i}">${t} ↗</button>`).join('');
- if(story.mode==='explore'){$('#guide-next').hidden=true;$('#phone-instruction').hidden=true;$('#guide-kicker').textContent='自由操作 / 当前提示';$('#scene-note').hidden=true;$('#story-action-hint').textContent='上方可随时从头讲解';return;}
+ if(story.mode==='explore'){
+  $('#guide-next').hidden=!exploreComparison;$('#phone-instruction').hidden=true;
+  $('#guide-kicker').textContent='自由操作 / 当前提示';$('#scene-note').hidden=true;
+  $('#story-action-hint').textContent='上方可随时从头讲解';
+  if(exploreComparison){
+   const isB=state.variant==='progress';
+   $('#step-index').textContent=isB?'方案 B · 圆形进度条':'方案 A · 商品位';
+   $('#guide-content').innerHTML='<h2>两件已选，自由对照方案</h2><p>切换 A/B 只改变进度呈现，商品和金额不变。也可以直接在手机内 Checkout。</p>';
+   $('#guide-next').textContent=isB?'返回 A 版商品位':'查看 B 版进度条';
+   $('#guide-next').disabled=false;
+  }
+  return;
+ }
  story.offScript=!s.valid();
  $('#intent-title').textContent=chapters[s.chapter][2];$('#intent-copy').textContent=chapters[s.chapter][3];
  $('#guide-kicker').textContent=story.offScript?'当前正在自由操作':'现在体验';$('#step-index').textContent=s.phase;
@@ -91,12 +109,12 @@ function storyRender(){
  $('#guide-next').textContent=state.spinning?'正在揭晓权益…':state.paying?'模拟支付处理中…':story.offScript?'回到当前讲解':s.cta;
  $('#guide-next').disabled=state.spinning||state.paying;
  const selector=typeof s.target==='function'?s.target():s.target;
- $('#guide-next').hidden=!!$('.rules-modal')||!!state.overlay||(!story.offScript&&![5,22].includes(story.index));
+ $('#guide-next').hidden=!!$('.rules-modal')||(!story.comparisonPrompt&&(!!state.overlay||(!story.offScript&&![5,22].includes(story.index))));
  $('#phone-instruction').hidden=!selector||story.offScript;
  $('#phone-instruction').textContent=selector?'在手机内点击高亮区域':'';
  $('#story-action-hint').textContent=selector?'也可以直接操作手机':'点击上方按钮继续讲解';
 }
-function storyRestart(){story.busy=true;story.index=0;story.journey={pickerReviewed:false,singleReturned:false,exitLeft:false,exitContinued:false};guidanceEnabled=story.mode==='guided';story.snapshots.clear();story.seen.clear();reset();if(story.mode==='guided'){story.index=1;state.variant='slots';state.audience='low';openOffer('spin',true);}storyRemember();story.busy=false;storyRender();scheduleOffer();scheduleCoach(true);}
+function storyRestart(){story.busy=true;story.index=0;story.comparisonPrompt=false;story.journey={comparison:'pending',pickerReviewed:false,singleReturned:false,exitLeft:false,exitContinued:false};guidanceEnabled=story.mode==='guided';story.snapshots.clear();story.seen.clear();reset();if(story.mode==='guided'){story.index=1;state.variant='slots';state.audience='low';openOffer('spin',true);}storyRemember();story.busy=false;storyRender();scheduleOffer();scheduleCoach(true);}
 function stageForCurrentScreen(){
  const i=story.index;
  if(state.overlay==='picker')return state.draft.size>state.selected.size?12:11;
@@ -115,14 +133,14 @@ function stageForCurrentScreen(){
   return 20;
  }
  if(state.purchased!=null)return state.selected.size?19:18;
- if(eligibleCount()>=2){if(i===14){story.journey.exitLeft=true;return 15;}if(i===15)return 15;return state.variant==='progress'?6:5;}
+ if(eligibleCount()>=2){if(i===14){story.journey.exitLeft=true;return 15;}if(i===15)return 15;return story.journey.comparison==='pending'?5:6;}
  if(eligibleCount()===1){if(i===9){story.journey.singleReturned=true;return 26;}if(i===26)return 26;if(i===6||i===23)return 23;return [7,8,15,16,27].includes(i)&&!state.overlay?8:4;}
  return 3;
 }
 function setExperienceMode(mode){
  if(mode===story.mode)return;
  if(story.mode==='guided')story.guidedContext=originalGuideKey();
- story.mode=mode;guidanceEnabled=mode==='guided';clearTimeout(coachTimer);hideCoach();
+ story.comparisonPrompt=false;story.mode=mode;guidanceEnabled=mode==='guided';clearTimeout(coachTimer);hideCoach();
  if(mode==='guided'){
   if(story.guidedContext!==originalGuideKey())story.index=stageForCurrentScreen();
   storyRemember();
@@ -136,7 +154,32 @@ const productScheduleOffer=scheduleOffer;
 scheduleOffer=function(){if(story.mode==='guided'&&story.index!==0){clearTimeout(pushTimer);return;}productScheduleOffer();};
 const productClickTarget=clickTarget;
 clickTarget=function(){if(story.mode==='guided'&&!story.offScript){const s=contextualStoryStep(),target=typeof s.target==='function'?s.target():s.target;return [target||'[data-story-no-target]',s.cta];}return productClickTarget();};
-$('#guide-next').addEventListener('click',e=>{if(story.mode==='guided'){e.stopImmediatePropagation();storyAdvance();}},true);
+// Comparison is a presentation milestone, independent of the product variant.
+function resolveComparison(choice){
+ story.comparisonPrompt=false;
+ storyEnter(6,()=>{
+  story.journey.comparison=choice;
+  if(choice==='viewed')state.variant='progress';
+  if(state.overlay==='bag')state.overlay=null;
+  render();
+ });
+}
+app.addEventListener('click',e=>{
+ const control=e.target.closest('[data-action="checkout"]');
+ if(!control||story.mode!=='guided'||story.journey.comparison!=='pending'||state.page!=='venue'||eligibleCount()<2)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ story.comparisonPrompt=true;clearTimeout(coachTimer);hideCoach();storyRender();
+ $('#guide-next').focus({preventScroll:true});
+ $('#guide-next').scrollIntoView({block:'nearest',behavior:'smooth'});
+},true);
+$('#comparison-skip').addEventListener('click',()=>resolveComparison('skipped'));
+$('#guide-next').addEventListener('click',e=>{
+ if(story.mode==='guided'){e.stopImmediatePropagation();storyAdvance();return;}
+ if(plainVenue()&&eligibleCount()>=2&&!$('.rules-modal')){
+  e.stopImmediatePropagation();rememberScroll();
+  state.variant=state.variant==='slots'?'progress':'slots';render();
+ }
+},true);
 $('#reset').addEventListener('click',e=>{e.stopImmediatePropagation();storyRestart();},true);
 $('#story-back').addEventListener('click',()=>{if(story.index>0)storyRestore(story.index-1);});
 $('#walkthrough-summary').addEventListener('click',e=>{const button=e.target.closest('[data-story-replay]');if(!button)return;const index=Number(button.dataset.storyReplay);if(!story.snapshots.has(index))return;story.mode='guided';guidanceEnabled=true;storyRestore(index);});

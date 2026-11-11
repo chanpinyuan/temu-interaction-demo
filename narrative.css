@@ -70,3 +70,9 @@
 @keyframes compareArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
 @media(max-width:620px){.masthead{padding:0 12px;gap:8px}.masthead .brand{font-size:21px}.experience-modes button{padding:8px 12px;font-size:11px}.masthead .reset{font-size:10px;padding:8px 0}.experience-modes{padding:3px}}
 @media(prefers-reduced-motion:reduce){.guide-next.compare-ready,.guide-next.compare-ready:after{animation:none!important}}
+
+/* A guide checkpoint outside the device; never an extra purchase modal. */
+.comparison-skip{display:block;width:100%;padding:12px 8px;margin-top:4px;background:transparent;color:#85715a;font-size:12px;text-align:center;cursor:pointer}
+.comparison-skip:hover{color:#624323;text-decoration:underline}
+.comparison-prompt .guide-top{border-top-color:#bd8a47}
+.comparison-prompt .guide-next:focus-visible,.comparison-skip:focus-visible{outline:2px solid #b8823f;outline-offset:4px}
